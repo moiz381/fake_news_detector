@@ -4,6 +4,7 @@ import requests
 import re
 import nltk
 import os
+from io import BytesIO
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
@@ -21,18 +22,18 @@ except LookupError:
     nltk.download('wordnet', download_dir=nltk_data_path)
     nltk.download('omw-1.4', download_dir=nltk_data_path)
 
-# --- Function to load Joblib model from Google Drive
+# --- Function to load Joblib file from Google Drive
 @st.cache_data
 def load_joblib_from_drive(file_id):
     url = f"https://drive.google.com/uc?id={file_id}"
     response = requests.get(url)
     if response.status_code == 200:
-        return joblib.load(open("/tmp/tmp_model.pkl", "wb").write(response.content))
+        return joblib.load(BytesIO(response.content))
     else:
         st.error("❌ Failed to download model or vectorizer from Google Drive.")
         return None
 
-# --- Replace these with your actual Google Drive file IDs
+# --- Replace with your actual file IDs from Google Drive
 model_file_id = "1Tskp7Q0SNw2jIiJsKIA_q71HT7sOgugg"
 vectorizer_file_id = "1hdtfuvnZDz9125eC_VVugdTz-QXz6f_J"
 
